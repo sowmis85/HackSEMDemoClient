@@ -1,0 +1,51 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Welcome SME Screen</h2>
+    <p>Please log in to your account</p>
+
+    <!-- Error message alert -->
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage() }}
+    </div>
+
+    <form [formGroup]="loginForm">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="username">Email Address</label>
+        <input
+          id="username"
+          type="username"
+          formControlName="username"
+          placeholder="Enter your username"
+          [ngClass]="{'is-invalid': loginForm.get('email')?.touched && loginForm.get('username')?.invalid}"
+        />
+        <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid" class="error-text">
+          <span *ngIf="loginForm.get('username')?.errors?.['required']">UserName is required.</span>
+          <span *ngIf="loginForm.get('username')?.errors?.['email']">Please enter a valid User Name.</span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          [ngClass]="{'is-invalid': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}"
+        />
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error-text">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters long.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" title="Submit" [disabled]="loginForm.invalid || isLoading">
+        <span *ngIf="isLoading">Logging in...</span>
+        <span *ngIf="!isLoading">Log In</span>
+      </button>
+    </form>
+  </div>
+</div>

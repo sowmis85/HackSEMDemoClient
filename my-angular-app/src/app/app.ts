@@ -1,8 +1,5 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
-import { RuntimeErrorCode } from '@angular/platform-server';
-import { RouterOutlet } from '@angular/router';
-import { Route } from '@angular/router';
-import { Router } from 'express';
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 
 
 @Component({
@@ -12,6 +9,6 @@ import { Router } from 'express';
   templateUrl: './app.html',
 })
 export class App {
-protected readonly title = signal('my-angular-app');
-private route=inject(Router);
+  protected readonly title = signal('my-angular-app');
+  private readonly route = inject(Router);
 }

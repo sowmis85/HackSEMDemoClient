@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -14,7 +14,8 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -25,7 +26,8 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  showPassword = false;
+  readonly isLoading = this.authService.isLoading;
+  readonly authError = this.authService.error; 
 
   loginForm = this.fb.nonNullable.group({
     email: [
@@ -37,50 +39,30 @@ export class LoginComponent {
     ],
     password: [
       '',
-      Validators.required
+      [
+        Validators.required,
+        Validators.minLength(8)
+      ]
     ]
   });
 
-  togglePassword(): void {
-    this.showPassword = !this.showPassword;
-  }
-
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    this.authService
-      .login(this.loginForm.getRawValue())
-      .subscribe({
-        next: (response) => {
+    try {
+      const response = await this.authService.login(
+        this.loginForm.getRawValue()
+      );
 
-          localStorage.setItem(
-            'accessToken',
-            response.accessToken
-          );
-
-          localStorage.setItem(
-            'refreshToken',
-            response.refreshToken
-          );
-
-          console.log('Login Successful');
-
-            // Redirect to Events Home Page
-            this.router.navigate(['/events']);
-        },
-        error: (error) => {
-
-                console.log('Status:', error.status);
-
-                console.log('Message:', error.message);
-
-                console.log('Error:', error);
-
-        }
-      });
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+      await this.router.navigate(['/events']);
+    } catch (error) {
+      console.error('Login failed.', error);
+    }
   }
 }

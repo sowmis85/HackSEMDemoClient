@@ -122,18 +122,11 @@
 .input-group input {
   width: 100%;
   padding: 12px 14px;
+  padding-right: 48px;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
   outline: none;
 }
-
-.eye-icon {
-  position: absolute;
-  right: 14px;
-  top: 12px;
-  cursor: pointer;
-}
-
 .options {
   display: flex;
   justify-content: space-between;
@@ -191,6 +184,9 @@
 .signup-link a {
   color: #2563eb;
   text-decoration: none;
+}
+.form-container p.auth-error {
+  color: #dc2626;
 }
 
 /* Mobile */

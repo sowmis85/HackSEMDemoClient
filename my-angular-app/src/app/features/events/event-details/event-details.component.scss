@@ -1,0 +1,151 @@
+.event-details-page {
+  max-width: 1400px;
+  margin: auto;
+  padding: 24px;
+  background: #f4f7fb;
+  min-height: 100vh;
+}
+
+.back-link {
+  color: #1f4fd8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.event-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 16px;
+  display: flex;
+  gap: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.event-image-section {
+  flex: 0 0 350px;
+}
+
+.event-image {
+  width: 100%;
+  height: 260px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.event-info-section {
+  flex: 1;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-row h1 {
+  margin: 0;
+  color: #173256;
+}
+
+.badge {
+  background: #e8fff0;
+  color: #198754;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.description {
+  margin: 12px 0 24px;
+  color: #555;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: gray;
+  font-size: 12px;
+}
+
+.available {
+  color: green;
+  font-weight: 600;
+}
+
+.status {
+  color: #1f4fd8;
+  font-weight: 600;
+}
+
+.action-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-primary {
+  background: #2453ff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: white;
+  color: #2453ff;
+  border: 1px solid #2453ff;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tabs-container {
+  margin-top: 25px;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabs button {
+  border: none;
+  background: transparent;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tabs button.active {
+  color: #2453ff;
+  border-bottom: 3px solid #2453ff;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.highlights ul {
+  padding-left: 20px;
+}
+
+.highlights li {
+  margin-bottom: 10px;
+}

@@ -3,8 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, map, startWith, Subject, switchMap } from 'rxjs';
-
+import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
+import { EventModel} from '../models/event.model';
 
 @Component({
   selector: 'app-event-list',
@@ -17,6 +18,7 @@ import { EventService } from '../services/event.service';
 export class EventListComponent implements OnInit{
 
      private eventService = inject(EventService);
+     private router = inject(Router);
      private destroyRef = inject(DestroyRef);
      private platformId = inject(PLATFORM_ID);
      searchControl = new FormControl('');
@@ -98,4 +100,8 @@ selectCategory(category: string): void {
       category: this.selectedCategory
     });
   }
+
+  viewEvent(event: EventModel): void {
+  this.router.navigate(['/events', event.eventId]);
+}
 }

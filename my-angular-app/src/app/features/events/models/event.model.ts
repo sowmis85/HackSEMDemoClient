@@ -1,13 +1,12 @@
-export interface EventCard {
+export interface EventModel {
   eventId: string;
   title: string;
   description: string;
   category: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   status: string;
   capacity: number;
   reservedSeats: number;
   availableSeats: number;
-  organizerId: string;
 }

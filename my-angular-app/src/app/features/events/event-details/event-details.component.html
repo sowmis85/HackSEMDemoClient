@@ -1,0 +1,184 @@
+<div class="event-details-page">
+
+  <!-- Back Button -->
+  <div class="back-section">
+    <a routerLink="/events" class="back-link">
+      ← Back to Events
+    </a>    
+  </div>
+
+@if (event(); as eventDetails) {
+
+  <div class="event-card">  
+
+    <!-- Right Section -->
+    <div class="event-info-section">
+
+      <div class="title-row">
+        <h1>{{ eventDetails.title }}</h1>
+
+        <span class="badge">
+          {{ eventDetails.category }}
+        </span>
+      </div>
+
+      <p class="description">
+        {{ eventDetails.description }}
+      </p>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span class="label">Event ID</span>
+          <span>{{ eventDetails.eventId }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Start Date</span>
+          <span>
+            {{ eventDetails.startDate | date:'dd MMM yyyy, hh:mm a' }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">End Date</span>
+          <span>
+            {{ eventDetails.endDate | date:'dd MMM yyyy, hh:mm a' }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Status</span>
+          <span class="status">
+            {{ eventDetails.status || 'Open' }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Capacity</span>
+          <span>{{ eventDetails.capacity }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Reserved</span>
+          <span>{{ eventDetails.reservedSeats }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Available Seats</span>
+          <span class="available">
+            {{ eventDetails.availableSeats }} Seats Left
+          </span>
+        </div>
+
+      </div>
+
+      <div class="action-buttons">
+
+        <button
+          class="btn-primary"
+          (click)="registerEvent()">
+          Register Now
+        </button>
+
+        <button
+          class="btn-secondary"
+          (click)="addToCalendar()">
+          Add To Calendar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Tabs Section -->
+
+  <div class="tabs-container">
+
+    <div class="tabs">
+      <button
+        [class.active]="selectedTab === 'overview'"
+        (click)="selectedTab='overview'">
+        Overview
+      </button>
+
+      <button
+        [class.active]="selectedTab === 'agenda'"
+        (click)="selectedTab='agenda'">
+        Agenda
+      </button>
+
+      <button
+        [class.active]="selectedTab === 'speakers'"
+        (click)="selectedTab='speakers'">
+        Speakers
+      </button>
+
+      <button
+        [class.active]="selectedTab === 'faqs'"
+        (click)="selectedTab='faqs'">
+        FAQs
+      </button>
+    </div>
+
+    @switch (selectedTab) {
+
+      @case ('overview') {
+
+        <div class="tab-content">
+
+          <h3>Overview</h3>
+
+          <p>{{ eventDetails.description }}</p>
+
+          <div class="highlights">
+
+            <h4>Key Highlights</h4>
+
+            <ul>
+              <li>Expert Sessions</li>
+              <li>Networking Opportunities</li>
+              <li>Hands-on Workshops</li>
+              <li>Certification Guidance</li>
+            </ul>
+
+          </div>
+
+        </div>
+
+      }
+
+      @case ('agenda') {
+
+        <div class="tab-content">
+          <h3>Agenda</h3>
+          <p>Agenda information will be available soon.</p>
+        </div>
+
+      }
+
+      @case ('speakers') {
+
+        <div class="tab-content">
+          <h3>Speakers</h3>
+          <p>Speaker information will be available soon.</p>
+        </div>
+
+      }
+
+      @case ('faqs') {
+
+        <div class="tab-content">
+          <h3>Frequently Asked Questions</h3>
+          <p>No FAQs available.</p>
+        </div>
+
+      }
+    }
+
+  </div>
+
+  }
+</div>

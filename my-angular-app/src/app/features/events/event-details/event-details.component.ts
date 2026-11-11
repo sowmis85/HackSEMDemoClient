@@ -23,6 +23,8 @@ export class EventDetailsComponent implements OnInit {
   readonly event = signal<EventModel | null>(null);
   readonly loading = signal(true);
 
+  isAddingToCalendar = false;
+
   ngOnInit(): void {
 
     const eventId = this.route.snapshot.paramMap.get('eventId');
@@ -49,6 +51,33 @@ export class EventDetailsComponent implements OnInit {
   }
 
   addToCalendar(): void {
-    console.log('Add to calendar clicked');
+    const selectedEvent = this.event();
+
+    if (!selectedEvent?.eventId) {
+      return;
+    }
+
+    const start =
+      new Date(selectedEvent.startDate)
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .split('.')[0] + 'Z';
+
+    const end =
+      new Date(selectedEvent.endDate)
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .split('.')[0] + 'Z';
+
+    const url =
+  'https://outlook.office.com/calendar/0/deeplink/compose?' +
+  `subject=${encodeURIComponent(selectedEvent.title)}` +
+  `&body=${encodeURIComponent(selectedEvent.description)}` +
+  `&location=${encodeURIComponent('Smart Event Management')}` +
+  `&startdt=${encodeURIComponent(start)}` +
+  `&enddt=${encodeURIComponent(end)}`;
+
+
+    window.open(url, '_blank');
   }
 }

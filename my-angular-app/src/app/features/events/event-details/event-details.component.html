@@ -1,5 +1,4 @@
 <div class="event-details-page">
-
   <!-- Back Button -->
   <div class="back-section">
     <a routerLink="/events" class="back-link">
@@ -8,7 +7,11 @@
   </div>
 
 @if (event(); as eventDetails) {
-
+@if(eventDetails.availableSeats <= 0) {
+  <div class="sold-out-banner">
+    🚫 Registration Closed - Event Fully Booked
+  </div>
+}
   <div class="event-card">  
 
     <!-- Right Section -->
@@ -75,17 +78,28 @@
 
       <div class="action-buttons">
 
-        <button
-          class="btn-primary"
-          (click)="registerEvent()">
-          Register Now
-        </button>
+          <button
+    class="btn-primary"
+    (click)="registerEvent()"
+    [disabled]="eventDetails.availableSeats <= 0">
+    {{
+      eventDetails.availableSeats === 0
+        ? 'Sold Out'
+        : 'Register Now'
+    }}
+  </button>
 
-        <button
-          class="btn-secondary"
-          (click)="addToCalendar()">
-          Add To Calendar
-        </button>
+ <button
+  class="btn-secondary"
+  (click)="addToCalendar()"
+  [disabled]="eventDetails.availableSeats <= 0 || isAddingToCalendar">
+
+  @if(isAddingToCalendar){
+    Adding...
+  } @else {
+    Add To Calendar
+  }
+</button>
 
       </div>
 

@@ -149,3 +149,25 @@
 .highlights li {
   margin-bottom: 10px;
 }
+.btn-primary,
+.btn-secondary {
+  transition: all 0.3s ease;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  background: #d6d6d6;
+  color: #888;
+  border-color: #d6d6d6;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.sold-out-banner {
+  margin: 12px 0;
+  padding: 10px 15px;
+  background: #fff1f0;
+  color: #cf1322;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+  font-weight: 600;
+}

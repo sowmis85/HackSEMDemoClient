@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EventService } from '../services/event.service';
 import { EventModel } from '../models/event.model';
 import {DatePipe} from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router} from '@angular/router';
 import { signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -18,6 +18,7 @@ export class EventDetailsComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
   private eventService = inject(EventService);
+  private router = inject(Router);
   selectedTab = 'overview';
 
   readonly event = signal<EventModel | null>(null);
@@ -48,6 +49,13 @@ export class EventDetailsComponent implements OnInit {
 
   registerEvent(): void {
     console.log('Register clicked');
+     const event = this.event();
+  if (!event) return;
+
+  void this.router.navigate(
+    ['/registration', event.eventId],
+    { state: { event } }
+  );
   }
 
   addToCalendar(): void {

@@ -1,22 +1,91 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
-- main
+  branches:
+    include:
+      - hackdemo_registerchanges
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '24.x'
-  displayName: 'Install Node.js'
+variables:
+  nodeVersion: '22.x'
+  angularProjectPath: 'my-angular-app'
+  # Replace these with your Azure DevOps service connection and Windows App Service name.
+  azureServiceConnection: 'SEMDemoClient'
+  webAppName: 'SEMDemo-client'
 
-- script: |
-    npm install -g @angular/cli latest
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
+stages:
+  - stage: Build
+    displayName: Build Angular SSR app
+    jobs:
+      - job: Build
+        steps:
+          - task: NodeTool@0
+            displayName: Use Node.js $(nodeVersion)
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          - script: npm ci
+            displayName: Install dependencies
+            workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
+
+          - script: npm run build -- --configuration production
+            displayName: Build production app
+            workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
+
+          # Package the SSR output at the deployment root. App Service starts the
+          # Windows Node app using the npm start script in this package.json.
+          - bash: |
+              set -euo pipefail
+              mkdir -p "$(Build.ArtifactStagingDirectory)/app"
+              cp -R "$(Build.SourcesDirectory)/$(angularProjectPath)/dist/my-angular-app/." "$(Build.ArtifactStagingDirectory)/app/"
+              cp "$(Build.SourcesDirectory)/$(angularProjectPath)/package.json" "$(Build.ArtifactStagingDirectory)/app/package.json"
+              cp "$(Build.SourcesDirectory)/$(angularProjectPath)/package-lock.json" "$(Build.ArtifactStagingDirectory)/app/package-lock.json"
+              node -e "const fs=require('fs'); const p='$(Build.ArtifactStagingDirectory)/app/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.scripts={...j.scripts,start:'node server/server.mjs'}; fs.writeFileSync(p,JSON.stringify(j,null,2)+'\\n');"
+            displayName: Prepare Windows App Service package
+
+          - task: ArchiveFiles@2
+            displayName: Archive deployment package
+            inputs:
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/angular-app.zip'
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish deployment package
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/angular-app.zip'
+              ArtifactName: drop
+              publishLocation: Container
+
+  - stage: Deploy
+    displayName: Deploy to Windows App Service
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployAngular
+        displayName: Deploy Angular SSR app
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  displayName: Download deployment package
+                  inputs:
+                    buildType: current
+                    downloadType: single
+                    artifactName: drop
+                    downloadPath: '$(Pipeline.Workspace)'
+
+                - task: AzureWebApp@1
+                  displayName: Deploy to Windows App Service
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    appType: webApp
+                    appName: $(webAppName)
+                    package: '$(Pipeline.Workspace)/drop/angular-app.zip'
+                    # Enable this App Service setting so Kudu installs the
+                    # production dependencies from the packaged package-lock.json.
+                    appSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT true'

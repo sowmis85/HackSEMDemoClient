@@ -7,7 +7,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  nodeVersion: '22.x'
+  nodeVersion: '24.x'
   angularProjectPath: 'my-angular-app'
   # Replace these with your Azure DevOps service connection and Windows App Service name.
   azureServiceConnection: 'SEMDemoClient'
@@ -19,12 +19,15 @@ stages:
     jobs:
       - job: Build
         steps:
-          - task: NodeTool@0
+          - task: UseNode@1
             displayName: Use Node.js $(nodeVersion)
             inputs:
               versionSpec: $(nodeVersion)
 
-          - script: npm ci
+          - script: |
+              node --version
+              npm --version
+              npm ci --verbose
             displayName: Install dependencies
             workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
 

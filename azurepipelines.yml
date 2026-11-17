@@ -1,0 +1,92 @@
+trigger:
+  branches:
+    include:
+      - hackdemo_registerchanges
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: '24.x'
+  angularProjectPath: 'my-angular-app'
+  # Replace with your Azure DevOps service connection and Windows App Service name.
+  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION'
+  webAppName: 'YOUR-WINDOWS-APP-SERVICE-NAME'
+
+stages:
+  - stage: Build
+    displayName: Build Angular SSR app
+    jobs:
+      - job: Build
+        steps:
+          # Must run before npm ci; the error log showed Node 10/npm 6.
+          - task: NodeTool@0
+            displayName: Use supported Node.js $(nodeVersion)
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          - script: |
+              node --version
+              npm --version
+              npm ci --verbose
+            displayName: Install dependencies
+            workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
+
+          - script: npm run build -- --configuration production
+            displayName: Build production app
+            workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
+
+          - bash: |
+              set -euo pipefail
+              app_dir="$(Build.ArtifactStagingDirectory)/app"
+              mkdir -p "$app_dir"
+              cp -R "$(Build.SourcesDirectory)/$(angularProjectPath)/dist/my-angular-app/." "$app_dir/"
+              cp "$(Build.SourcesDirectory)/$(angularProjectPath)/package.json" "$app_dir/package.json"
+              cp "$(Build.SourcesDirectory)/$(angularProjectPath)/package-lock.json" "$app_dir/package-lock.json"
+              node -e "const fs=require('fs'); const p=process.argv[1]; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.scripts={...j.scripts,start:'node server/server.mjs'}; fs.writeFileSync(p,JSON.stringify(j,null,2)+'\\n');" "$app_dir/package.json"
+            displayName: Prepare Windows App Service package
+
+          - task: ArchiveFiles@2
+            displayName: Archive deployment package
+            inputs:
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/angular-app.zip'
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish deployment package
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/angular-app.zip'
+              ArtifactName: drop
+              publishLocation: Container
+
+  - stage: Deploy
+    displayName: Deploy to Windows App Service
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployAngular
+        displayName: Deploy Angular SSR app
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  displayName: Download deployment package
+                  inputs:
+                    buildType: current
+                    downloadType: single
+                    artifactName: drop
+                    downloadPath: '$(Pipeline.Workspace)'
+
+                - task: AzureWebApp@1
+                  displayName: Deploy to Windows App Service
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    appType: webApp
+                    appName: $(webAppName)
+                    package: '$(Pipeline.Workspace)/drop/angular-app.zip'
+                    appSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT true'

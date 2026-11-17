@@ -72,7 +72,7 @@ stages:
     jobs:
       - deployment: DeployAngular
         displayName: Deploy Angular SSR app
-        environment: production
+        environment: dev
         strategy:
           runOnce:
             deploy:

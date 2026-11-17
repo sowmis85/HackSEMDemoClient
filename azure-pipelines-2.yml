@@ -35,8 +35,8 @@ stages:
             displayName: Install dependencies
             workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
 
-          - script: npm run build -- --configuration development
-            displayName: Build development app
+          - script: npm run build -- --configuration production
+            displayName: Build production app
             workingDirectory: $(Build.SourcesDirectory)/$(angularProjectPath)
 
           - bash: |

@@ -14,7 +14,7 @@ variables:
   angularProjectPath: 'my-angular-app'
   # Replace with your Azure DevOps service connection and Windows App Service name.
   azureServiceConnection: 'SEMDemoClient'
-  webAppName: 'SEMDemo-client'
+  webAppName: 'SEMHackDemoClient'
 
 stages:
   - stage: Build

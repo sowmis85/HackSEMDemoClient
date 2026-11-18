@@ -4,4 +4,6 @@ export interface LoginResponse {
   expiresIn: number;
   role: string;
   userId: string;
+  success: boolean;
+  message?: string;
 }

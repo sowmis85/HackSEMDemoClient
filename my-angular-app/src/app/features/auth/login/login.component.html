@@ -45,28 +45,30 @@
         </div>
 
         <div class="input-group">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            placeholder="Password"
-            formControlName="password">
-
-        <span class="eye-icon" (click)="togglePassword()">
-            👁
-        </span>
+            <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password" />   
+            @if (loginForm.get('password')?.touched &&
+            loginForm.get('password')?.invalid) {
+              <small>
+                Password must be at least 8 characters
+              </small>
+          }     
         </div>
+        <div class="options">   <a routerLink="/forgot-password">Forgot password?</a>  
+               </div>
 
-        <div class="options">
-        <label>
-            <input type="checkbox">
-            Remember me
-        </label>
-
-          <a href="#">Forgot password?</a>
-        </div>
-
-        <button class="login-btn" type="submit" [disabled]="loginForm.invalid">
-          Login
+        <button class="login-btn" type="submit" [disabled]="loginForm.invalid || isLoading()">
+          {{ isLoading() ? 'Logging in...' : 'Login' }}
         </button>
+
+        @if (authError()) {
+          <p class="auth-error" role="alert">
+            {{ authError() }}
+          </p>
+        }
 
       </form>
 
@@ -75,7 +77,7 @@
       </div>
       <div class="signup-link">
         New to SmartEvent?
-        <a href="#">Create an account</a>
+        <a routerLink="/register">Create an account</a>
       </div>
 
     </div>

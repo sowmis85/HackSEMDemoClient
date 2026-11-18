@@ -1,7 +1,7 @@
-import { EventCard } from './event.model';
+import { EventModel} from './event.model';
 
 export interface EventListResponse {
-  events: EventCard[];
+  events: EventModel[];
   totalRecords: number;
   pageNumber: number;
   pageSize: number;

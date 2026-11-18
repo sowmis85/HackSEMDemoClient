@@ -1,0 +1,83 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { EventService } from '../services/event.service';
+import { EventModel } from '../models/event.model';
+import {DatePipe} from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+
+@Component({
+  selector: 'app-event-details',
+  standalone:   true,
+  imports: [DatePipe, RouterLink],
+  templateUrl: './event-details.component.html',
+  styleUrls: ['./event-details.component.scss']
+})
+export class EventDetailsComponent implements OnInit {
+
+  private route = inject(ActivatedRoute);
+  private eventService = inject(EventService);
+  selectedTab = 'overview';
+
+  readonly event = signal<EventModel | null>(null);
+  readonly loading = signal(true);
+
+  isAddingToCalendar = false;
+
+  ngOnInit(): void {
+
+    const eventId = this.route.snapshot.paramMap.get('eventId');
+    if (eventId) {
+      this.loadEvent(eventId);
+    }
+  }
+
+  async loadEvent(eventId: string): Promise<void> {
+    try {
+      const response = await firstValueFrom(
+        this.eventService.getEventById(eventId)
+      );
+      this.event.set(response);
+    } catch (err) {
+      console.error('Failed to load event', err);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  registerEvent(): void {
+    console.log('Register clicked');
+  }
+
+  addToCalendar(): void {
+    const selectedEvent = this.event();
+
+    if (!selectedEvent?.eventId) {
+      return;
+    }
+
+    const start =
+      new Date(selectedEvent.startDate)
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .split('.')[0] + 'Z';
+
+    const end =
+      new Date(selectedEvent.endDate)
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .split('.')[0] + 'Z';
+
+    const url =
+  'https://outlook.office.com/calendar/0/deeplink/compose?' +
+  `subject=${encodeURIComponent(selectedEvent.title)}` +
+  `&body=${encodeURIComponent(selectedEvent.description)}` +
+  `&location=${encodeURIComponent('Smart Event Management')}` +
+  `&startdt=${encodeURIComponent(start)}` +
+  `&enddt=${encodeURIComponent(end)}`;
+
+
+    window.open(url, '_blank');
+  }
+}

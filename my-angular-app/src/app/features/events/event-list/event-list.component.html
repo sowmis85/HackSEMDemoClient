@@ -1,3 +1,114 @@
-<div class="container-fluid bg-light min-vh-100">
+<div class="events-page">
+ <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg px-4 py-3">
+    <h4 class="fw-semibold text-primary">
+      Smart Event Connect
+    </h4>
 
-  
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-4">
+        <li class="nav-item">
+          <a class="nav-link active">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link">Events</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link">My Registrations</a>
+        </li>      
+      </ul>
+    </div>
+
+    <div class="fw-semibold text-primary">
+      Welcome!
+    </div>
+  </nav>
+  <!-- Hero Section -->
+  <section class="hero-section">
+
+    <div class="hero-content">
+
+      <h1>
+        Discover Events <br>
+        That Inspire You
+      </h1>
+
+      <p>
+        Conferences, Workshops, Meetups,
+        Hackathons and more.
+      </p>
+
+      <div class="search-container">
+
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Search events by title, category or location..."
+          (keyup.enter)="onSearch()" />
+
+        <button type="button" (click)="onSearch()">
+          Search
+        </button>
+            <button type="button" (click)="clearSearch()">
+            Clear
+            </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Categories -->
+  <section class="category-section">
+
+    <button
+      *ngFor="let category of categories"
+      class="category-chip"
+      [class.active]="selectedCategory === category.value"
+      (click)="selectCategory(category.value)">
+      {{ category.label }}
+    </button>
+
+  </section>
+
+  <!-- Event Cards -->
+  <section class="events-grid">
+
+    <div
+      class="event-card"
+      *ngFor="let event of events">
+
+      <div class="badge">
+        {{ event.category }}
+      </div>
+
+      <h3>
+        {{ event.title }}
+      </h3>
+
+      <p>
+        {{ event.location }}
+      </p>
+
+      <div class="event-info">
+
+        <span>
+          📅 {{ event.startDate | date:'dd MMM yyyy' }}
+        </span>
+
+        <span>
+          👥 {{ event.availableSeats }}
+        </span>
+
+      </div>
+
+      <button class="details-btn">
+        View Details
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

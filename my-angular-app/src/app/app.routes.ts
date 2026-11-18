@@ -4,6 +4,8 @@ import { EventListComponent } from './features/events/event-list/event-list.comp
 import { CreateAccountComponent } from './features/registration/create-account/create-account.component';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { EventDetailsComponent } from './features/events/event-details/event-details.component';
+import { EventRegistrationComponent } from './features/registration/event-registration/event-registration.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -26,7 +28,11 @@ export const routes: Routes = [
     path: 'events/:eventId',
     component: EventDetailsComponent
   },
-   {
+  {
+  path: 'registration/:eventId',
+  component: EventRegistrationComponent
+  },
+  {
     path: 'register',
     component: CreateAccountComponent
   },

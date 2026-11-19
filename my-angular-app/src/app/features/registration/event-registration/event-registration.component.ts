@@ -79,14 +79,14 @@ export class EventRegistrationComponent implements OnInit {
         }
       });
   }
-  cancel(): void {
-  const eventId =
-    this.event()?.eventId ?? this.route.snapshot.paramMap.get('eventId');
-
-  void this.router.navigate(
-    eventId ? ['/events', eventId] : ['/events']
-  );
-}
+    clearForm(): void {
+      this.registrationForm.reset({
+        attendeeName: '',
+        attendeeEmail: '',
+        quantity: 1
+      });
+      this.registrationError.set(null);
+    } 
    submit(): void {
 
      this.registrationError.set(null);

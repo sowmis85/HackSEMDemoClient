@@ -22,14 +22,14 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent {
 
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   readonly isLoading = this.authService.isLoading;
   readonly authError = this.authService.error; 
 
-  loginForm = this.fb.nonNullable.group({
+  loginForm = this.formBuilder.nonNullable.group({
     email: [
       '',
       [

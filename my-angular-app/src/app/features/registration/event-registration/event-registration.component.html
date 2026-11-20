@@ -48,7 +48,7 @@
       <div>
         <label>Number of Attendees</label>
         <input type="number" formControlName="quantity" min="1" step="1" />
-      </div>      
+      </div>          
     </div>
     <div class="action-bar">
       <button
@@ -69,11 +69,6 @@
   @if (registrationSuccess()) {
 
     <div class="success-card">
-
-      <h3>
-        Registration Successful
-      </h3>
-
       <p>
         Registration ID:
         {{ registrationId() }}
@@ -84,6 +79,19 @@
         {{ workflowId() }}
       </p>
 
+      <p>
+        Registration Kickoff Successful! Confirmation email will be sent to {{ registrationForm.value.attendeeEmail }}.</p>
+        <div class="back-section">
+        Status can be tracked in the workflow
+         <a
+          [routerLink]="['/workflow', workflowId()]"
+          [queryParams]="{
+            eventName: event()?.title,
+            attendeeEmail: registrationForm.value.attendeeEmail
+          }"
+          class="back-link">
+      -> Registration Status workflow   </a>   
+    </div>
     </div>
   }
 </div>

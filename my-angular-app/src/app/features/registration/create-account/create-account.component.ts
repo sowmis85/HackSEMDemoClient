@@ -23,14 +23,14 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class CreateAccountComponent {
 
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   successMessage = '';
   errorMessage = '';
 
-  registerForm: FormGroup = this.fb.group({
+  registerForm: FormGroup = this.formBuilder.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],

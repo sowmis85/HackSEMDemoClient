@@ -5,6 +5,7 @@ import { CreateAccountComponent } from './features/registration/create-account/c
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { EventDetailsComponent } from './features/events/event-details/event-details.component';
 import { EventRegistrationComponent } from './features/registration/event-registration/event-registration.component';
+import { TaskWorkflowComponent } from './features/workflow/task-workflow.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: CreateAccountComponent
+  },
+  {
+    path: 'workflow/:workflowId',
+    component: TaskWorkflowComponent
   },
   {
     path: '**',

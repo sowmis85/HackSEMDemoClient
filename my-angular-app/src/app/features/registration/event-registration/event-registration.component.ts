@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventRegistrationService } from '../services/event-registration.service';
 import { EventService } from '../../events/services/event.service';
 import { EventModel } from '../../events/models/event.model';
@@ -12,7 +12,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './event-registration.component.html',
   styleUrls: ['./event-registration.component.scss']
@@ -21,7 +22,7 @@ export class EventRegistrationComponent implements OnInit {
 
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly fb = inject(FormBuilder);
+  private readonly formBuilder = inject(FormBuilder);
   private readonly eventService = inject(EventService);
   private readonly registrationService = inject(EventRegistrationService);
 
@@ -33,7 +34,7 @@ export class EventRegistrationComponent implements OnInit {
 
   isLoading = true;
 
-  registrationForm = this.fb.group({
+  registrationForm = this.formBuilder.group({
     attendeeName: ['', Validators.required],
     attendeeEmail: ['', [Validators.required, Validators.email]],
     quantity: [1, [Validators.required, Validators.min(1)]]    
@@ -50,15 +51,12 @@ export class EventRegistrationComponent implements OnInit {
     eventFromState =
         history.state?.event as EventModel;
     }
-
-    // Event available from navigation state
     if (eventFromState) {
       this.event.set(eventFromState);
       this.isLoading = false;
       return;
     }
 
-    // Refresh scenario
     const eventId =
       this.route.snapshot.paramMap.get('eventId');
 

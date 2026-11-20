@@ -24,8 +24,8 @@ export class ForgotPasswordComponent {
   errorMessage = '';
   private authService = inject(AuthService);
 
-  constructor(private fb: FormBuilder) {
-    this.forgotPasswordForm = this.fb.group({
+  constructor(private formBuilder: FormBuilder) {
+    this.forgotPasswordForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       newPassword: [
         '',

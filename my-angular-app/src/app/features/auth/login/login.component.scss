@@ -10,11 +10,15 @@
   font-family: Arial, sans-serif;
   background: #f4f6fb;
 }
+
+
 .left-panel {
   flex: 1;
   background: linear-gradient(
       rgba(6, 32, 93, .85),
       rgba(20, 58, 165, .85)
+    ), 
+      center/cover;
     );
 
   color: white;
@@ -64,7 +68,6 @@
 .content li {
   margin-bottom: 15px;
 }
-
 .right-panel {
   flex: 1;
   background: white;
@@ -181,8 +184,6 @@
 .form-container p.auth-error {
   color: #dc2626;
 }
-
-/* Mobile */
 
 @media(max-width: 768px) {
 

@@ -10,17 +10,12 @@
   font-family: Arial, sans-serif;
   background: #f4f6fb;
 }
-
-/* Left Panel */
-
 .left-panel {
   flex: 1;
   background: linear-gradient(
       rgba(6, 32, 93, .85),
       rgba(20, 58, 165, .85)
-    ),
-    url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f')
-      center/cover;
+    );
 
   color: white;
   padding: 40px;
@@ -69,8 +64,6 @@
 .content li {
   margin-bottom: 15px;
 }
-
-/* Right Panel */
 
 .right-panel {
   flex: 1;

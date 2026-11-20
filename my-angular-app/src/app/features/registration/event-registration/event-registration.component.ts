@@ -21,7 +21,7 @@ export class EventRegistrationComponent implements OnInit {
 
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly fb = inject(FormBuilder);
+  private readonly formBuilder = inject(FormBuilder);
   private readonly eventService = inject(EventService);
   private readonly registrationService = inject(EventRegistrationService);
 
@@ -33,7 +33,7 @@ export class EventRegistrationComponent implements OnInit {
 
   isLoading = true;
 
-  registrationForm = this.fb.group({
+  registrationForm = this.formBuilder.group({
     attendeeName: ['', Validators.required],
     attendeeEmail: ['', [Validators.required, Validators.email]],
     quantity: [1, [Validators.required, Validators.min(1)]]    

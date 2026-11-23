@@ -46,23 +46,21 @@ export class LoginComponent {
     ]
   });
 
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    try {
-      const response = await this.authService.login(
-        this.loginForm.getRawValue()
-      );
-
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      await this.router.navigate(['/events']);
-    } catch (error) {
-      console.error('Login failed.', error);
-    }
+    this.authService.login(this.loginForm.getRawValue())
+      .subscribe({
+        next: response => {
+          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
+          void this.router.navigate(['/events']);
+        },
+        error: error => console.error('Login failed.', error)
+      });
   }
 }

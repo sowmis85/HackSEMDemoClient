@@ -41,7 +41,7 @@ export class ForgotPasswordComponent {
     return this.forgotPasswordForm.controls;
   }
 
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
 
     this.submitted = true;
 
@@ -49,24 +49,26 @@ export class ForgotPasswordComponent {
       return;
     }
 
-    try {
-      const response = await this.authService.forgotPassword({
-        email: this.forgotPasswordForm.getRawValue().email,
-        newPassword: this.forgotPasswordForm.getRawValue().newPassword
-      });     
-
-      this.successMessage = 'Password changed successfully.';
-      this.errorMessage = '';
-      this.forgotPasswordForm.reset();
-      this.submitted = false;
-    } catch (error) {
-      this.successMessage = '';
-     this.errorMessage = error instanceof HttpErrorResponse
-        ? error.error?.message ?? error.message
-        : error instanceof Error
-          ? error.message
-        : 'Could not change password.';
-    }
+    this.authService.forgotPassword({
+      email: this.forgotPasswordForm.getRawValue().email,
+      newPassword: this.forgotPasswordForm.getRawValue().newPassword
+    })
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Password changed successfully.';
+          this.errorMessage = '';
+          this.forgotPasswordForm.reset();
+          this.submitted = false;
+        },
+        error: error => {
+          this.successMessage = '';
+          this.errorMessage = error instanceof HttpErrorResponse
+            ? error.error?.message ?? error.message
+            : error instanceof Error
+              ? error.message
+              : 'Could not change password.';
+        }
+      });
   }
   
 }

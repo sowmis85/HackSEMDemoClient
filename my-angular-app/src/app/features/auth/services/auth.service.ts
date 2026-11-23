@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, catchError, defer, finalize, tap, throwError } from 'rxjs';
 
 import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
@@ -19,39 +19,41 @@ export class AuthService {
   readonly isAuthenticated = signal(false);
   readonly error = signal<string | null>(null);
 
-  async login(request: LoginRequest): Promise<LoginResponse> {
-    const response = await this.sendRequest(
+  login(request: LoginRequest): Observable<LoginResponse> {
+    return this.sendRequest(
       this.http.post<LoginResponse>(`${this.baseUrl}/login`, request)
+    ).pipe(
+      tap(response => {
+        if (response.success === false) {
+          this.isAuthenticated.set(false);
+          const message = response.message || 'Login failed.';
+          this.error.set(message);
+          throw new Error(message);
+        }
+
+        this.isAuthenticated.set(true);
+      })
     );
-
-    if (response.success === false) {
-      this.isAuthenticated.set(false);
-      this.error.set(response.message || 'Login failed.');
-      throw new Error(response.message || 'Login failed.');
-    }
-
-    this.isAuthenticated.set(true);
-    return response;
   }
 
-  async refreshToken(refreshToken: string): Promise<LoginResponse> {
-    const response = await this.sendRequest(
+  refreshToken(refreshToken: string): Observable<LoginResponse> {
+    return this.sendRequest(
       this.http.post<LoginResponse>(
         `${this.baseUrl}/refresh-token`,
         { refreshToken }
       )
+    ).pipe(
+      tap(() => this.isAuthenticated.set(true))
     );
-    this.isAuthenticated.set(true);
-    return response;
   }
 
-  register(request: RegisterRequest): Promise<unknown> {
+  register(request: RegisterRequest): Observable<unknown> {
     return this.sendRequest(
       this.http.post<unknown>(`${this.baseUrl}/register`, request)
     );
   }
 
-  forgotPassword(request: { email: string; newPassword: string }): Promise<unknown> {
+  forgotPassword(request: { email: string; newPassword: string }): Observable<unknown> {
     return this.sendRequest(
       this.http.post<unknown>(
         `${this.baseUrl}/forgot-password`,
@@ -60,19 +62,20 @@ export class AuthService {
     );
   }
 
-  private async sendRequest<T>(request: Observable<T>): Promise<T> {
-    this.isLoading.set(true);
-    this.error.set(null);
+  private sendRequest<T>(request: Observable<T>): Observable<T> {
+    return defer(() => {
+      this.isLoading.set(true);
+      this.error.set(null);
 
-    try {
-      return await firstValueFrom(request);
-    } catch (error) {
-      this.error.set(
-        error instanceof Error ? error.message : 'Invalid Login Credentials'
+      return request.pipe(
+        catchError(error => {
+          this.error.set(
+            error instanceof Error ? error.message : 'Invalid Login Credentials'
+          );
+          return throwError(() => error);
+        }),
+        finalize(() => this.isLoading.set(false))
       );
-      throw error;
-    } finally {
-      this.isLoading.set(false);
-    }
+    });
   }
 }

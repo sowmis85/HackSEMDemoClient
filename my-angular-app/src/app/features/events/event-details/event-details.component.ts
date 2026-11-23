@@ -5,7 +5,7 @@ import { EventModel } from '../models/event.model';
 import {DatePipe} from '@angular/common';
 import { RouterLink, Router} from '@angular/router';
 import { signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-event-details',
@@ -34,17 +34,13 @@ export class EventDetailsComponent implements OnInit {
     }
   }
 
-  async loadEvent(eventId: string): Promise<void> {
-    try {
-      const response = await firstValueFrom(
-        this.eventService.getEventById(eventId)
-      );
-      this.event.set(response);
-    } catch (err) {
-      console.error('Failed to load event', err);
-    } finally {
-      this.loading.set(false);
-    }
+  loadEvent(eventId: string): void {
+    this.eventService.getEventById(eventId)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: event => this.event.set(event),
+        error: err => console.error('Failed to load event', err)
+      });
   }
 
   registerEvent(): void {

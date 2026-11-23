@@ -44,29 +44,32 @@ export class CreateAccountComponent {
     role: ['Admin', Validators.required]
   });
 
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    try {
-      await this.authService.register(this.registerForm.getRawValue());
-      this.successMessage = 'Account created successfully';
-      this.errorMessage = '';
-      this.registerForm.reset({ role: 'Admin' });
+    this.authService.register(this.registerForm.getRawValue())
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Account created successfully';
+          this.errorMessage = '';
+          this.registerForm.reset({ role: 'Admin' });
 
-            setTimeout(() => {
-          void this.router.navigate(['/login']);
-        }, 1000);
-    } catch (error) {
-      this.successMessage = '';
-      this.errorMessage = error instanceof HttpErrorResponse
-        ? error.error?.message ?? error.message
-        : error instanceof Error
-          ? error.message
-          : 'Failed to create account';
-    }
+          setTimeout(() => {
+            void this.router.navigate(['/login']);
+          }, 1000);
+        },
+        error: error => {
+          this.successMessage = '';
+          this.errorMessage = error instanceof HttpErrorResponse
+            ? error.error?.message ?? error.message
+            : error instanceof Error
+              ? error.message
+              : 'Failed to create account';
+        }
+      });
   }
 }

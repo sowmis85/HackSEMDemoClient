@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventRegistrationService } from '../services/event-registration.service';
 import { EventService } from '../../events/services/event.service';
 import { EventModel } from '../../events/models/event.model';
@@ -13,7 +13,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule    
+    ReactiveFormsModule,
+    RouterLink  
   ],
   templateUrl: './event-registration.component.html',
   styleUrls: ['./event-registration.component.scss']

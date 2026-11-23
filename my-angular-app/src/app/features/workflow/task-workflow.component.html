@@ -1,0 +1,98 @@
+<div class="workflow-page">
+
+    <div class="workflow-header">
+
+        <div>
+            <h2>Registration Status</h2>
+
+            <p>
+                Track the status of your registration request
+            </p>
+        </div>
+
+    </div>
+
+    <div class="content-container">
+
+        <div class="timeline-section">
+
+            <div class="timeline">
+
+                @for(step of workflowSteps; track step.name; let index = $index) {
+
+                <div class="step">
+
+                    <div
+                        class="circle"
+                        [class.completed]="getStepClass(step.status) === 'completed'"
+                        [class.current]="getStepClass(step.status) === 'In progress'">
+                        @if(getStepClass(step.status) === 'In progress') {
+                            {{ index + 1 }}
+                        }
+                        @if(getStepClass(step.status) === 'completed') {
+                            ✓
+                        }
+
+                       
+
+                    </div>
+
+                    <div class="step-title">
+                        {{ step.name }}
+                    </div>
+
+                    <div class="step-status">
+                        {{ step.status }}
+                    </div>
+
+                </div>
+
+                }
+
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>Registration Summary</h3>
+
+            <div class="summary-row">
+                <span>Event Name</span>
+                <span class="status-badge">
+                    {{ registrationSummary().eventName }}
+                </span>
+            </div>
+
+            <div class="summary-row">
+                <span>Reference Id</span>
+                 <span class="status-badge">
+                    {{ registrationSummary().registrationId }}
+                </span> 
+            </div>
+            <div class="summary-row">
+                <span>Attendee Email</span>
+                <span class="status-badge">
+                    {{ registrationSummary().attendeeEmail }}
+                </span>                
+            </div>
+            <div class="summary-row">
+                <span>Status</span>
+
+                <span class="status-badge">
+                    {{ registrationSummary().status }}
+                </span>
+            </div>
+
+            <div class="summary-row">
+                <span>Date Submitted</span>
+                <span class="status-badge">
+                    {{ registrationSummary().submittedDate | date:'dd MMM yyyy, hh:mm a' }}
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventRegistrationService } from '../services/event-registration.service';
 import { EventService } from '../../events/services/event.service';
 import { EventModel } from '../../events/models/event.model';
@@ -13,7 +13,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './event-registration.component.html',
   styleUrls: ['./event-registration.component.scss']
@@ -52,15 +53,12 @@ export class EventRegistrationComponent implements OnInit {
     eventFromState =
         history.state?.event as EventModel;
     }
-
-    // Event available from navigation state
     if (eventFromState) {
       this.event.set(eventFromState);
       this.isLoading = false;
       return;
     }
 
-    // Refresh scenario
     const eventId =
       this.route.snapshot.paramMap.get('eventId');
 
@@ -82,14 +80,14 @@ export class EventRegistrationComponent implements OnInit {
         }
       });
   }
-  cancel(): void {
-  const eventId =
-    this.event()?.eventId ?? this.route.snapshot.paramMap.get('eventId');
-
-  void this.router.navigate(
-    eventId ? ['/events', eventId] : ['/events']
-  );
-}
+    clearForm(): void {
+      this.registrationForm.reset({
+        attendeeName: '',
+        attendeeEmail: '',
+        quantity: 1
+      });
+      this.registrationError.set(null);
+    } 
    submit(): void {
 
      this.registrationError.set(null);

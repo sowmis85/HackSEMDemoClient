@@ -1,18 +1,10 @@
 <div class="registration-container">
-
-  <div class="stepper">
-    <div class="step completed">
-      Event Details 
-    </div>   
-    <div class="step active">
-      Register
-    </div>    
-    <div class="step">
-      Confirmation
-    </div>
-
+ <div class="back-section">
+    <a [href]="'/events/' + event()?.eventId" class="back-link">
+      ← Back to Events Details      
+    </a>    
   </div>
-
+  <div></div>
   <div class="event-card">  
 
     <div class="event-info">
@@ -56,19 +48,19 @@
       <div>
         <label>Number of Attendees</label>
         <input type="number" formControlName="quantity" min="1" step="1" />
-      </div>      
+      </div>          
     </div>
     <div class="action-bar">
       <button
         type="submit"
         class="btn-register">
         Register
-      </button>
-        <button
+      </button>        
+         <button
         type="button"
-        class="btn-cancel"
-        (click)="cancel()">
-        Cancel
+        class="btn-clear"
+        (click)="clearForm()">
+        Clear
         </button>
     </div>
 
@@ -77,11 +69,6 @@
   @if (registrationSuccess()) {
 
     <div class="success-card">
-
-      <h3>
-        Registration Successful
-      </h3>
-
       <p>
         Registration ID:
         {{ registrationId() }}
@@ -92,6 +79,19 @@
         {{ workflowId() }}
       </p>
 
+      <p>
+        Registration Kickoff Successful! Confirmation email will be sent to {{ registrationForm.value.attendeeEmail }}.</p>
+        <div class="back-section">
+        Status can be tracked in the workflow
+         <a
+          [routerLink]="['/workflow', workflowId()]"
+          [queryParams]="{
+            eventName: event()?.title,
+            attendeeEmail: registrationForm.value.attendeeEmail
+          }"
+          class="back-link">
+      -> Registration Status workflow   </a>   
+    </div>
     </div>
   }
 </div>

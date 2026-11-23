@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -26,6 +27,7 @@ export class CreateAccountComponent {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   successMessage = '';
   errorMessage = '';
@@ -52,6 +54,7 @@ export class CreateAccountComponent {
     }
 
     this.authService.register(this.registerForm.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.successMessage = 'Account created successfully';

@@ -1,5 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventService } from '../services/event.service';
 import { EventModel } from '../models/event.model';
 import {DatePipe} from '@angular/common';
@@ -19,6 +20,7 @@ export class EventDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private eventService = inject(EventService);
   private router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   selectedTab = 'overview';
 
   readonly event = signal<EventModel | null>(null);
@@ -36,7 +38,10 @@ export class EventDetailsComponent implements OnInit {
 
   loadEvent(eventId: string): void {
     this.eventService.getEventById(eventId)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: event => this.event.set(event),
         error: err => console.error('Failed to load event', err)

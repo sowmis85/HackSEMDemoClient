@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -22,6 +23,7 @@ export class ForgotPasswordComponent {
   submitted = false;
   successMessage = '';
   errorMessage = '';
+  private readonly destroyRef = inject(DestroyRef);
   private authService = inject(AuthService);
 
   constructor(private formBuilder: FormBuilder) {
@@ -53,6 +55,7 @@ export class ForgotPasswordComponent {
       email: this.forgotPasswordForm.getRawValue().email,
       newPassword: this.forgotPasswordForm.getRawValue().newPassword
     })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.successMessage = 'Password changed successfully.';

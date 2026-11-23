@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -25,6 +26,7 @@ export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isLoading = this.authService.isLoading;
   readonly authError = this.authService.error; 
@@ -54,6 +56,7 @@ export class LoginComponent {
     }
 
     this.authService.login(this.loginForm.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => {
           localStorage.setItem('accessToken', response.accessToken);

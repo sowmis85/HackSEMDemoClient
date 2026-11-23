@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventRegistrationService } from '../services/event-registration.service';
@@ -24,6 +25,7 @@ export class EventRegistrationComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly eventService = inject(EventService);
   private readonly registrationService = inject(EventRegistrationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   registrationSuccess = signal(false);
   registrationId = signal('');
@@ -69,6 +71,7 @@ export class EventRegistrationComponent implements OnInit {
 
     this.eventService
       .getEventById(eventId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: EventModel) => {
           this.event.set(response);
@@ -105,6 +108,7 @@ export class EventRegistrationComponent implements OnInit {
     
    this.registrationService
   .register(this.event()!.eventId, request)
+  .pipe(takeUntilDestroyed(this.destroyRef))
   .subscribe({
     next: response => {
       if (response.success === false) {

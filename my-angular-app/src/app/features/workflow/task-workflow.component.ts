@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EventWorkflowService } from '../workflow/services/task-workflow.services';
 
@@ -11,7 +11,7 @@ interface WorkflowStep {
 @Component({    
   selector: 'app-task-workflow',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './task-workflow.component.html',
   styleUrl: './task-workflow.component.scss'
 })

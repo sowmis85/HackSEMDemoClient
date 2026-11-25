@@ -6,6 +6,7 @@ import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-
 import { EventDetailsComponent } from './features/events/event-details/event-details.component';
 import { EventRegistrationComponent } from './features/registration/event-registration/event-registration.component';
 import { TaskWorkflowComponent } from './features/workflow/task-workflow.component';
+import { MyRegistrationsComponent } from './features/registration/my-registrations/my-registration.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,10 @@ export const routes: Routes = [
   {
     path: 'workflow/:workflowId',
     component: TaskWorkflowComponent
+  },
+  {
+    path: 'my-registrations',
+    component: MyRegistrationsComponent
   },
   {
     path: '**',

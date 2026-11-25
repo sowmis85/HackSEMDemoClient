@@ -7,6 +7,7 @@ import { EventRegistrationService } from '../services/event-registration.service
 import { EventService } from '../../events/services/event.service';
 import { EventModel } from '../../events/models/event.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -27,12 +28,13 @@ export class EventRegistrationComponent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly registrationService = inject(EventRegistrationService);
   private readonly destroyRef = inject(DestroyRef);
+   private readonly authService = inject(AuthService);
 
   registrationSuccess = signal(false);
   registrationId = signal('');
   workflowId = signal('');
   registrationError = signal<string | null>(null);
-  readonly event = signal<EventModel | null>(null);
+  readonly event = signal<EventModel | null>(null);  
 
   isLoading = true;
 
@@ -66,7 +68,7 @@ export class EventRegistrationComponent implements OnInit {
       this.isLoading = false;
       return;
     }
-
+  
     this.eventService
       .getEventById(eventId)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -97,10 +99,19 @@ export class EventRegistrationComponent implements OnInit {
       return;
     }
 
+    const userId = this.authService.getUserId();
+
+    if (!userId) {
+      void this.router.navigate(['/login']);
+      return;
+    }
+
+
     const request = {      
       attendeeName: this.registrationForm.value.attendeeName!,
       attendeeEmail: this.registrationForm.value.attendeeEmail!,
-      quantity: this.registrationForm.value.quantity!
+      quantity: this.registrationForm.value.quantity!,
+      createdBy: userId
     };
 
     

@@ -3,14 +3,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, map, startWith, Subject, switchMap } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { EventService } from '../services/event.service';
 import { EventModel} from '../models/event.model';
 
 @Component({
   selector: 'app-event-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss']
 })

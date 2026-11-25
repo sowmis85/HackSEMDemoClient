@@ -61,6 +61,9 @@ export class LoginComponent {
         next: response => {
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
+          localStorage.setItem('userId', response.userId);
+           localStorage.setItem('role', response.role);
+          console.log("login screen set" + response.userId);
           void this.router.navigate(['/events']);
         },
         error: error => console.error('Login failed.', error)

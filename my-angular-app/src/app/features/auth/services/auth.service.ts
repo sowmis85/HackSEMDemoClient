@@ -1,4 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, defer, finalize, tap, throwError } from 'rxjs';
 
@@ -13,11 +14,20 @@ import { environment } from '../../../../environments/environment';
 export class AuthService {
 
   private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly baseUrl = `${environment.apiUrl}/Auth`;
   readonly isLoading = signal(false);
   readonly isAuthenticated = signal(false);
   readonly error = signal<string | null>(null);
+
+  getUserId(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+
+    return localStorage.getItem('userId');
+  }
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.sendRequest(

@@ -9,7 +9,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/events/edit-event/edit-event.component,ts"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

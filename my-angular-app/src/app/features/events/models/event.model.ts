@@ -3,10 +3,11 @@ export interface EventModel {
   title: string;
   description: string;
   category: string;
-  startDate: Date;
-  endDate: Date;
+  location: string;
+  startDate: string;
+  endDate: string;
   status: string;
   capacity: number;
   reservedSeats: number;
-  availableSeats: number;
+  availableSeats: number;  
 }

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject} from '@angular/core';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { EventListResponse } from '../models/event-list-response.model';
 import { environment } from '../../../../environments/environment';
@@ -10,9 +10,10 @@ import { EventModel } from '../models/event.model';
 })
 export class EventService {
 
-  private readonly apiUrl = `${environment.apiUrl}/events`;
+  private readonly http = inject(HttpClient);  
 
-  constructor(private http: HttpClient) { }
+  private readonly apiUrl = `${environment.apiUrl}/events`;
+  
 
   getEventById(eventId: string): Observable<EventModel> {
   return this.http.get<EventModel>(`${this.apiUrl}/${eventId}`).pipe(
@@ -45,4 +46,28 @@ export class EventService {
       { params }
     );
   }
+  createEvent(event: any) {
+  return this.http.post(
+    `${this.apiUrl}`,
+    event);
+}
+    publishEvent(eventId: string) { 
+    return this.http.put(
+      `${this.apiUrl}/${eventId}/publish`,  {}
+    );
+  }
+
+  deleteEvent(eventId: string) {
+    return this.http.delete(
+      `${this.apiUrl}/${eventId}`
+    );
+  }
+  updateEvent(eventId: string, event: any) {
+  return this.http.put(
+    `${this.apiUrl}/${eventId}`,
+    event
+  );
+}
+
+
 }

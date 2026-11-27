@@ -33,6 +33,9 @@ export class MyRegistrationsComponent implements OnInit {
   totalRegistrations = 0;
   confirmedCount = 0;
   cancelledCount = 0; 
+  registrationIdToCancel: string | null = null;
+  cancelError: string | null = null;
+  isCancelling = false;
 
   ngOnInit(): void {
     this.loadRegistrations();
@@ -66,18 +69,44 @@ export class MyRegistrationsComponent implements OnInit {
   editRegistration(registration: UserRegistration): void {
     this.router.navigate(['/events', registration.eventId]);
   }
-  cancelRegistration(registrationId: string): void {
+  requestCancelRegistration(registrationId: string): void {
+    this.registrationIdToCancel = registrationId;
+    this.cancelError = null;
+  }
 
-    if (!confirm('Cancel registration?')) {
+  closeCancelDialog(): void {
+    if (this.isCancelling) {
       return;
     }
 
+    this.registrationIdToCancel = null;
+    this.cancelError = null;
+  }
+
+  confirmCancelRegistration(): void {
+    const registrationId = this.registrationIdToCancel;
+    if (!registrationId || this.isCancelling) {
+      return;
+    }
+
+    this.isCancelling = true;
+    this.cancelError = null;
     this.myRegistrationService
       .cancelRegistration(registrationId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.loadRegistrations(),
-        error: error => console.error('Failed to cancel registration.', error)
+        next: () => {
+          this.isCancelling = false;
+          this.registrationIdToCancel = null;
+          this.loadRegistrations();
+          this.changeDetectorRef.markForCheck();
+        },
+        error: error => {
+          this.isCancelling = false;
+          this.cancelError = 'Failed to cancel registration. Please try again.';
+          console.error('Failed to cancel registration.', error);
+          this.changeDetectorRef.markForCheck();
+        }
       });
   }
 }

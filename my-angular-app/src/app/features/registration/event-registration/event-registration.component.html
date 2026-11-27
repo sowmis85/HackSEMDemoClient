@@ -1,0 +1,97 @@
+<div class="registration-container">
+ <div class="back-section">
+    <a [href]="'/events/' + event()?.eventId" class="back-link">
+      ← Back to Events Details      
+    </a>    
+  </div>
+  <div></div>
+  <div class="event-card">  
+
+    <div class="event-info">
+
+      <h2>
+        {{ event()?.title }}
+      </h2>
+
+      <p>📅 {{ event()?.startDate }}</p>
+      <p>📍{{event()?.category}}</p>
+      <p>👥 Capacity: {{event()?.capacity}} || Available Seats: {{event()?.availableSeats}}</p>
+
+    </div>
+
+  </div>
+    @if (registrationError(); as message) {
+    <div class="error-card" role="alert">{{ message }}</div>
+    }
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="submit()">
+
+    <div class="form-grid">
+
+      <div>
+        <label>Attendee Name</label>
+
+        <input
+          type="text"
+          formControlName="attendeeName">
+      </div>
+
+      <div>
+        <label>Attendee EmailID</label>
+
+        <input
+          type="email"
+          formControlName="attendeeEmail">
+      </div>
+
+      <div>
+        <label>Number of Attendees</label>
+        <input type="number" formControlName="quantity" min="1" step="1" />
+      </div>          
+    </div>
+    <div class="action-bar">
+      <button
+        type="submit"
+        class="btn-register">
+        Register
+      </button>        
+         <button
+        type="button"
+        class="btn-clear"
+        (click)="clearForm()">
+        Clear
+        </button>
+    </div>
+
+  </form>
+
+  @if (registrationSuccess()) {
+
+    <div class="success-card">
+      <p>
+        Registration ID:
+        {{ registrationId() }}
+      </p>
+
+      <p>
+        Workflow Instance ID:
+        {{ workflowId() }}
+      </p>
+
+      <p>
+        Registration Kickoff Successful! Confirmation email will be sent to {{ registrationForm.value.attendeeEmail }}.</p>
+        <div class="back-section">
+        Status can be tracked in the workflow
+         <a
+          [routerLink]="['/workflow', workflowId()]"
+          [queryParams]="{
+            eventName: event()?.title,
+            attendeeEmail: registrationForm.value.attendeeEmail
+          }"
+          class="back-link">
+      -> Registration Status workflow   </a>   
+    </div>
+    </div>
+  }
+</div>

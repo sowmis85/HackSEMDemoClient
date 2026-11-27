@@ -1,0 +1,152 @@
+<div class="container mt-4">
+  <div class="back-section">
+    <a routerLink="/events" class="back-link">
+      ← Back to Home
+    </a>    
+  </div>
+  <h2>My Dashboard</h2>
+
+  <div class="row mb-4">
+
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h3>{{totalRegistrations}}</h3>
+          <p>Total Registrations</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm border-success">
+        <div class="card-body">
+          <h3>{{confirmedCount}}</h3>
+          <p>Confirmed Events</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm border-danger">
+        <div class="card-body">
+          <h3>{{cancelledCount}}</h3>
+          <p>Cancelled Events</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      My Registrations
+    </div>
+
+    <div class="card-body">
+
+      <table class="table table-hover">
+
+        <thead>
+          <tr>
+            <th>Registered User Name</th>
+            <th>Event Name</th>
+            <th>Scheduled Date</th>
+            <th>Venue</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (registration of registrations; track registration.registrationId)
+          {
+            <tr>
+               <td>{{registration.attendeeName}}</td>
+
+              <td>{{registration.eventName}}</td>
+
+              <td>
+                {{registration.eventDate | date:'medium'}}
+              </td>
+
+              <td>{{registration.location}}</td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-default' : registration.status=== 'Initiated' || registration.status === 'Pending',
+                    'bg-success': registration.status === 'Confirmed',
+                    'bg-danger': registration.status === 'Cancelled',
+                    'bg-warning': registration.status === 'Waitlisted'                   
+                  }">
+                  {{registration.status}}
+                </span>
+              </td>
+
+              <td>
+
+                <button
+                  class="btn btn-sm btn-primary me-2"
+                  (click)="editRegistration(registration)">
+                  Edit
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="requestCancelRegistration(registration.registrationId)"
+                  [disabled]="registration.status === 'Cancelled'">
+                  Cancel
+                </button>
+
+              </td>
+
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  @if (registrationIdToCancel !== null) {
+    <div class="confirmation-backdrop">
+      <section
+        class="confirmation-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cancel-dialog-title"
+        aria-describedby="cancel-dialog-description">
+        <h2 id="cancel-dialog-title">Cancel registration?</h2>
+        <p id="cancel-dialog-description">
+          Are you sure you want to cancel this registration?
+        </p>
+
+        @if (cancelError) {
+          <p class="cancel-error" role="alert">{{cancelError}}</p>
+        }
+
+        <div class="dialog-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeCancelDialog()"
+            [disabled]="isCancelling">
+            Keep registration
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmCancelRegistration()"
+            [disabled]="isCancelling">
+            {{isCancelling ? 'Cancelling...' : 'Yes, cancel'}}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
+</div>

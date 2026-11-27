@@ -1,0 +1,144 @@
+<div class="create-event-container">
+<div class="back-section">
+    <a routerLink="/event-management" class="back-link">
+      ← Back to Events Management
+    </a>    
+  </div>
+  <div class="page-header">
+
+    <h2>Create Event</h2>
+
+    <div class="action-buttons">
+
+      <button type="button"
+        class="draft-btn"
+        (click)="saveDraft()">
+        Save Draft
+      </button>
+
+      <button type="button"
+        class="publish-btn"
+        (click)="publishEvent()">
+        Publish Event
+      </button>
+
+    </div>
+
+  </div>
+
+  <form #eventForm="ngForm">
+
+    <div class="card">
+
+      <h3>Basic Information</h3>
+
+      <div class="row">
+
+        <div class="form-group">
+          <label>Event Name</label>
+          <input
+            type="text"
+            name="eventName"
+            [(ngModel)]="event.title">
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+
+          <select
+            name="category"
+            [(ngModel)]="event.category">
+
+            <option value="">
+              Select Category
+            </option>
+
+            <option value="Conference">
+              Conference
+            </option>
+
+            <option value="Workshop">
+              Workshop
+            </option>
+
+            <option value="Webinar">
+              Webinar
+            </option>
+
+            <option value="Training">
+              Training
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Description</label>
+
+        <textarea
+          rows="5"
+          name="description"
+          [(ngModel)]="event.description">
+        </textarea>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>Location & Dates</h3>
+
+      <div class="row">
+
+        <div class="form-group">
+          <label>Venue</label>
+
+          <input
+            type="text"
+            name="venue"
+            [(ngModel)]="event.location">
+        </div>
+
+        <div class="form-group">
+          <label>Capacity</label>
+
+          <input
+            type="number"
+            name="capacity"
+            [(ngModel)]="event.capacity">
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="form-group">
+          <label>Start Date</label>
+
+          <input
+            type="datetime-local"
+            name="startDate"
+            [(ngModel)]="event.startDate">
+        </div>
+
+        <div class="form-group">
+          <label>End Date</label>
+
+          <input
+            type="datetime-local"
+            name="endDate"
+            [(ngModel)]="event.endDate" [min]="event.startDate">
+        </div>
+
+      </div>
+
+    </div>   
+
+  </form>
+
+</div>
